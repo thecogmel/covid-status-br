@@ -7,6 +7,20 @@ export const ContainerDocument = styled.div`
 
   width: 100vw;
   height: 100vh;
+  .mobile {
+    display: none !important;
+  }
+  .web {
+    display: flex !important;
+  }
+  @media (max-width: 576px) {
+    .mobile {
+      display: flex !important;
+    }
+    .web {
+      display: none !important;
+    }
+  }
 `
 
 export const DataDiv = styled.div`
@@ -50,5 +64,13 @@ export const DataDiv = styled.div`
   .deaths:hover,
   .recovered:hover {
     transform: scale(1.1);
+  }
+`
+export const FooterContainer = styled.footer`
+  margin-top: auto;
+  a {
+    margin-left: 10px;
+    font-weight: bold;
+    text-decoration: none;
   }
 `

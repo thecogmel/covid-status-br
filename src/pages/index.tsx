@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import type {
   GetServerSideProps,
   NextPage,
@@ -11,8 +10,11 @@ import { Container, Stack } from 'react-bootstrap'
 import { BiPlusMedical } from 'react-icons/bi'
 import { FaSkullCrossbones } from 'react-icons/fa'
 
-import axios from 'axios'
-import { ContainerDocument, DataDiv } from '../styles/pages/styles'
+import {
+  ContainerDocument,
+  DataDiv,
+  FooterContainer
+} from '../styles/pages/styles'
 import covidImage from '../assets/covid-un.svg'
 import brazilFlag from '../assets/brazil.svg'
 
@@ -30,10 +32,18 @@ type Props = {
 }
 
 const Home: NextPage = ({
-  data
+  data,
+  notFound
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const date = new Date(data.lastUpdate).toLocaleDateString('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric'
+  })
+
   return (
-    <div>
+    <>
       <Head>
         <title>Covid Status BR</title>
         <meta name="description" content="App with covid status in Brazil" />
@@ -45,15 +55,39 @@ const Home: NextPage = ({
           <Container className="mt-5">
             <Stack
               direction="horizontal"
-              className="d-flex justify-content-center"
+              className="justify-content-center mobile"
               gap={3}
             >
-              <Image src={covidImage} alt="Picture of covid virus by UN" />
+              <Image
+                src={covidImage}
+                alt="Picture of covid virus by UN"
+                width={24}
+                height={24}
+              />
+              <h1 className="display-5">COVID Brazil Status</h1>
+              <Image
+                src={brazilFlag}
+                width={24}
+                height={24}
+                alt="Brazil flag"
+              />
+            </Stack>
+            <Stack
+              direction="horizontal"
+              className="justify-content-center web"
+              gap={3}
+            >
+              <Image
+                src={covidImage}
+                alt="Picture of covid virus by UN"
+                width={52}
+                height={52}
+              />
               <h1 className="display-1">COVID Brazil Status</h1>
               <Image
                 src={brazilFlag}
-                width={56}
-                height={56}
+                width={52}
+                height={52}
                 alt="Brazil flag"
               />
             </Stack>
@@ -62,7 +96,7 @@ const Home: NextPage = ({
             <Container>
               <Stack className="mt-5 d-flex justify-content-center confirmed">
                 <h2 className="display-1">
-                  {data.recovered.toLocaleString('pt-BR')}
+                  {notFound ? 0 : data.confirmed.toLocaleString('pt-BR')}
                 </h2>
                 <span>
                   <BiPlusMedical color="#f2463a" />
@@ -71,7 +105,7 @@ const Home: NextPage = ({
               </Stack>
               <Stack className="mt-5 d-flex justify-content-center deaths">
                 <h2 className="display-1">
-                  {data.deaths.toLocaleString('pt-BR')}
+                  {notFound ? 0 : data.deaths.toLocaleString('pt-BR')}
                 </h2>
                 <span>
                   <FaSkullCrossbones color="#000" />
@@ -80,7 +114,7 @@ const Home: NextPage = ({
               </Stack>
               <Stack className="mt-5 d-flex justify-content-center recovered">
                 <h2 className="display-1">
-                  {data.recovered.toLocaleString('pt-BR')}
+                  {notFound ? 0 : data.recovered.toLocaleString('pt-BR')}
                 </h2>
                 <span>
                   <BiPlusMedical color="#6ef23a" />
@@ -89,15 +123,29 @@ const Home: NextPage = ({
               </Stack>
             </Container>
           </DataDiv>
+          <FooterContainer className="flex-shrink-0 py-3 bg-dark text-white-50">
+            <Container className="text-center">
+              Última atualização: {date}
+            </Container>
+            <Container className="text-center">
+              Created by
+              <a
+                className="link text-white"
+                href="https://github.com/thecogmel"
+              >
+                <strong>Erick Medeiros</strong>
+              </a>
+            </Container>
+          </FooterContainer>
         </ContainerDocument>
       </main>
-    </div>
+    </>
   )
 }
 
 export default Home
 
-export const getServerSideProps: GetServerSideProps = async context => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const res = await fetch(
     'https://covid-19-data.p.rapidapi.com/country/code?code=br',
     {
