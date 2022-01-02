@@ -1,4 +1,13 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
+
+export const ContainerDocument = styled.div`
+  display: flex;
+  flex-direction: column;
+  place-content: center;
+
+  width: 100vw;
+  height: 100vh;
+`
 
 export const DataDiv = styled.div`
   display: flex;
@@ -42,4 +51,4 @@ export const DataDiv = styled.div`
   .recovered:hover {
     transform: scale(1.1);
   }
-`;
+`
